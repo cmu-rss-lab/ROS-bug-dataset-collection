@@ -14,6 +14,7 @@ The Llama model is used for bug verification and filtering. To set up and run th
 
 1. **Run the Docker container**: Pull and start the Ollama Docker image to serve the Llama model.
    ```sh
+   docker pull ollama/ollama:0.4.7
    docker run --gpus all -d --name ollama -p 11434:11434 -v /home/siyanwu/ollama_verify_bug/ollama_models:/root/.ollama ollama/ollama
    ```
 
