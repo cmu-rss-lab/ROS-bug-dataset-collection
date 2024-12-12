@@ -20,7 +20,6 @@ cd <repository-name>
 ### 2. Install Dependencies
 ```sh
 pipenv install
-pipenv shell
 ```
 
 ### 3. Set Up GitHub Token
@@ -42,10 +41,20 @@ pipenv shell
    ```sh
    docker compose up -d
    ```
-
+   Note: If your machine does not have a GPU, you need to adjust the compose.yml file by uncommenting the following lines to remove GPU requirements:
+   ```sh
+   # deploy:
+   #   resources:
+   #     reservations:
+   #       devices:
+   #         - driver: nvidia
+   #           count: 1
+   #           capabilities: [gpu]
+   ```
+   
 2. **Initialize Llama Model**:
    ```sh
-   docker exec -it ollama ollama run llama3
+   docker exec -it ollama_service ollama run llama3
    ```
 
 ## Usage
