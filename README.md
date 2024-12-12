@@ -2,42 +2,93 @@
 
 Tools for collecting a bug dataset focused on behavioral architecture miscomposition bugs in ROS (Robot Operating System).
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
-- Docker installed on your machine.
-- GPU support for running machine learning models (optional, but recommended).
-- Python 3.8.10 installed.
+- Docker installed on your machine
+- Python 3.8.10
+- Pipenv
+- GPU support for running machine learning models (optional, but recommended)
 
-### Setting Up the Llama Model
-The Llama model is used for bug verification and filtering. To set up and run the Llama model:
+## Setup
 
-1. **Run the Docker container**: Pull and start the Ollama Docker image to serve the Llama model.
+### 1. Clone the Repository
+```sh
+git clone <your-repository-url>
+cd <repository-name>
+```
+
+### 2. Install Dependencies
+```sh
+pipenv install
+pipenv shell
+```
+
+### 3. Set Up GitHub Token
+
+1. **Create a GitHub Personal Access Token**:
+   - Visit [GitHub Token Settings](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+   - Generate a token with appropriate repository access permissions
+
+2. **Run the Setup Script**:
    ```sh
-   docker run --gpus all -d --name ollama -p 11434:11434 -v /home/siyanwu/ollama_verify_bug/ollama_models:/root/.ollama ollama/ollama
+   bash setup.sh
+   ```
+   - The script will prompt you to enter your GitHub Personal Access Token
+   - It creates a `.env` file with secure, restricted permissions
+
+### 4. Set Up Llama Model
+
+1. **Start Ollama Docker Container**:
+   ```sh
+   docker compose up -d
    ```
 
-2. **Start the Llama model**:
+2. **Initialize Llama Model**:
    ```sh
    docker exec -it ollama ollama run llama3
    ```
 
-### Running the Commit Difference Script
-The `commit_diff.py` script processes commit differences for a given repository and helps identify behavioral bugs.
+## Usage
 
-To run the script:
+### Running Commit Difference Analysis
 
-1. Ensure the Docker container is running, as described above.
-2. Run the `commit_diff.py` script with the desired repository as an argument:
-   ```sh
-   python3 commit_diff.py <Owner/repo>
-   ```
-   Replace `<Owner/repo>` with the GitHub repository name in the format `Owner/repo`, e.g., `autowarefoundation/autoware`.
+To analyze commit differences for a specific repository:
 
-### Example
 ```sh
-python3 commit_diff.py autowarefoundation/autoware
+pipenv run python commit_diff.py <Owner/repo>
 ```
 
-## Arguments
-- `repo_name`: The GitHub repository name in the format `'Owner/repo'` (e.g., `autowarefoundation/autoware`).
+#### Example
+```sh
+pipenv run python commit_diff.py autowarefoundation/autoware
+```
+
+### Output
+
+After running the script, a CSV file will be generated with the following format:
+
+**Filename**: `autoware_verified_commits.csv`
+
+**Columns**:
+- `link`: Direct link to the GitHub commit
+- `answer`: Binary classification (True/False) indicating whether the commit represents a Behavioral Architecture Miscomposition Bug (BABC)
+- `reason`: Detailed explanation of why the commit was classified as a BABC or not
+
+**Example CSV Contents**:
+```
+link,answer,reason
+https://github.com/autowarefoundation/autoware/commit/abc123,True,"Significant changes in node communication pattern indicating potential behavioral architecture miscomposition"
+https://github.com/autowarefoundation/autoware/commit/def456,False,"Minor refactoring without substantial behavioral changes"
+```
+
+## Configuration
+
+### Arguments
+- `repo_name`: GitHub repository name in the format `'Owner/repo'`
+  - Example: `autowarefoundation/autoware`
+
+## Troubleshooting
+
+- Ensure Docker is running before executing scripts
+- Verify your GitHub token has the necessary permissions
+- Check that Pipenv environment is activated

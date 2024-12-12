@@ -107,7 +107,7 @@ def fetch_prompts(commits):
         else:
             print(f"Failed to fetch commit {sha} from {owner}/{repo}. Status code: {response.status_code}")
     return prompts
-    
+
 
 def post_chat(commit_message, code_changes):
     try:
@@ -121,7 +121,7 @@ def post_chat(commit_message, code_changes):
         res = requests.post(
             f"{base_endpoint}/chat",
             json={
-                "model": "llama3.1",
+                "model": "llama3",
                 "stream": False,
                 "format": "json",
                 "messages": [

@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  ollama_service:
+    image: ollama/ollama:latest
+    container_name: ollama_service
+    # Uncomment the following lines if you do not have GPU capabilities
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama_data:/root/.ollama
+    restart: unless-stopped
